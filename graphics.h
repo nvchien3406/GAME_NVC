@@ -5,10 +5,96 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "defs.h"
+#include "logic.h"
 
 struct Graphics{
     SDL_Renderer *renderer;
     SDL_Window *window;
+
+    SDL_Texture *textures[20];
+
+    void loadAllTextures()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            std::string filename = "assets/" + std::to_string(i + 1) + ".jpg"; // Nếu file là .jpg
+            textures[i] = loadTexture(filename.c_str()); // Chuyển string thành const char*
+
+            if (textures[i] == nullptr)
+            {
+                SDL_Log("Failed to load %s", filename.c_str());
+            }
+        }
+    }
+
+
+    void handleMouseClick(int x, int y, Pikachu& pikachu) {
+        int gridSize = pikachu.rows;
+        int tileSize = 64;
+
+        //Chuyển tọa độ thành ô
+        int i = (y - 32) / tileSize;
+        int j = (x - 32) / tileSize;
+
+
+        if (i >= 0 && i < gridSize && j >= 0 && j < gridSize) {
+            int tile = pikachu.mp[i][j];
+            if (tile != 0) {
+
+                if (pikachu.selectedX == -1 && pikachu.selectedY == -1) {
+
+                    pikachu.selectedX = i;
+                    pikachu.selectedY = j;
+                } else {
+
+                    if (pikachu.validmove(pikachu.selectedX, pikachu.selectedY, i, j)) {
+
+                        pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
+
+                        pikachu.selectedX = -1;
+                        pikachu.selectedY = -1;
+                    } else {
+
+                        pikachu.selectedX = -1;
+                        pikachu.selectedY = -1;
+                    }
+                }
+            }
+        }
+    }
+
+    void drawMap(int mp[MAX_SIZE][MAX_SIZE], int gridSize, Pikachu &pikachu)
+    {
+        int tileSize = 64; // Kích thước mỗi ô (80x80)
+
+        for (int i = 0; i < gridSize; i++)
+        {
+            for (int j = 0; j < gridSize; j++)
+            {
+                int type = mp[i][j]; // Lấy loại hình của ô
+
+                if (type > 0 && type < 21) // Chỉ vẽ nếu hợp lệ
+                {
+                    int x = 32 + j * tileSize;
+                    int y = 32 + i * tileSize;
+                    renderTexture(textures[type - 1], x, y);
+
+                    if (i == pikachu.selectedX && j == pikachu.selectedY) {
+                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Màu vàng
+                        SDL_Rect highlightRect1 = { x, y, tileSize, tileSize };
+                        SDL_Rect highlightRect2 = { x + 1, y + 1, tileSize - 2, tileSize - 2 };
+                        SDL_RenderDrawRect(renderer, &highlightRect1);
+                        SDL_RenderDrawRect(renderer, &highlightRect2);
+                    }
+                }
+
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Màu đen
+                SDL_Rect gridRect = { 32 + j * tileSize, 32 + i * tileSize, tileSize, tileSize };
+                SDL_RenderDrawRect(renderer, &gridRect);
+            }
+        }
+    }
+
 
     void logErrorAndExit(const char* msg, const char* error)
     {
