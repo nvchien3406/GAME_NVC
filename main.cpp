@@ -1,5 +1,5 @@
 #include <iostream>
-#include <SDL.h>  // Chỉnh sửa lại tên header
+#include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
@@ -11,13 +11,13 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    // Khởi tạo Graphics và Pikachu
+
     Graphics graphics;
     graphics.init();
 
     Pikachu pikachu;
-    pikachu.init(6);  // Khởi tạo với kích thước ban đầu (6x6)
-    graphics.loadAllTextures(); // Load tất cả các hình ảnh
+    pikachu.init(6);
+    graphics.loadAllTextures();
 
     bool running = true;
     SDL_Event e;

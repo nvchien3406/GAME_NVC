@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1742365819 source:e:\ltnc - uet\game_baitaplon\main.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"defs.h"
+	"graphics.h"
+	"logic.h"
+
+1742358395 e:\ltnc - uet\game_baitaplon\defs.h
+
+1742357275 e:\ltnc - uet\game_baitaplon\graphics.h
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	"defs.h"
+	"logic.h"
+
+1742356751 e:\ltnc - uet\game_baitaplon\logic.h
+	"defs.h"
+	<cstdlib>
+	<ctime>
+	<algorithm>
+	<unordered_map>
+	<vector>
+

@@ -17,8 +17,8 @@ struct Graphics{
     {
         for (int i = 0; i < 20; i++)
         {
-            std::string filename = "assets/" + std::to_string(i + 1) + ".jpg"; // Nếu file là .jpg
-            textures[i] = loadTexture(filename.c_str()); // Chuyển string thành const char*
+            std::string filename = "assets/" + std::to_string(i + 1) + ".jpg";
+            textures[i] = loadTexture(filename.c_str());
 
             if (textures[i] == nullptr)
             {
@@ -65,15 +65,15 @@ struct Graphics{
 
     void drawMap(int mp[MAX_SIZE][MAX_SIZE], int gridSize, Pikachu &pikachu)
     {
-        int tileSize = 64; // Kích thước mỗi ô (80x80)
+        int tileSize = 64;
 
         for (int i = 0; i < gridSize; i++)
         {
             for (int j = 0; j < gridSize; j++)
             {
-                int type = mp[i][j]; // Lấy loại hình của ô
+                int type = mp[i][j];
 
-                if (type > 0 && type < 21) // Chỉ vẽ nếu hợp lệ
+                if (type > 0 && type < 21)
                 {
                     int x = 32 + j * tileSize;
                     int y = 32 + i * tileSize;
