@@ -42,10 +42,8 @@ int main(int argc, char* argv[])
             if (!pikachu.hasmove()) {
                 pikachu.xaotron();
             }
-        }
-
-        else{
-            pikachu.nextLevel();
+        }else{
+            exit(0);
         }
         // Vẽ và cập nhật màn hình
         graphics.prepareScene();

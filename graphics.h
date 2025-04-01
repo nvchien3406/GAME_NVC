@@ -17,7 +17,7 @@ struct Graphics{
     {
         for (int i = 0; i < 36; i++)
         {
-            std::string filename = "assets/" + std::to_string(i + 1) + ".png";
+            std::string filename = "image/" + std::to_string(i) + ".png";
             textures[i] = loadTexture(filename.c_str());
 
             if (textures[i] == nullptr)
@@ -30,11 +30,12 @@ struct Graphics{
 
     void handleMouseClick(int x, int y, Pikachu& pikachu) {
         int gridSize = pikachu.rows;
-        int tileSize = 40;
+        int tileSize1 = 40;
+        int tileSize2 = 50;
 
         //Chuyển tọa độ thành ô
-        int i = (y - 32) / tileSize;
-        int j = (x - 32) / tileSize;
+        int i = (y - 200) / tileSize2;
+        int j = (x - 280) / tileSize1;
 
 
         if (i >= 0 && i < 9 && j >= 0 && j < 16) {
@@ -48,7 +49,19 @@ struct Graphics{
                 } else {
 
                     if (pikachu.validmove(pikachu.selectedX, pikachu.selectedY, i, j)) {
-
+                        std::vector<std::pair<int, int>> path = pikachu.duongdi(pikachu.selectedX, pikachu.selectedY, i, j);
+                        if(!path.empty()){
+                            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                            for (size_t i = 0; i < path.size() - 1; i++) {
+                                int x1 = 280 + path[i].second * tileSize1 + tileSize1 / 2;
+                                int y1 = 200 + path[i].first * tileSize2 + tileSize2 / 2;
+                                int x2 = 280 + path[i + 1].second * tileSize1 + tileSize1 / 2;
+                                int y2 = 200 + path[i + 1].first * tileSize2 + tileSize2 / 2;
+                                SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+                            }
+                            SDL_RenderPresent(renderer);
+                            SDL_Delay(300);
+                        }
                         pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
 
                         pikachu.selectedX = -1;
@@ -65,7 +78,8 @@ struct Graphics{
 
     void drawMap(int mp[9][16]/*, int gridSize*/, Pikachu &pikachu)
     {
-        int tileSize = 40;
+        int tileSize1 = 40;
+        int tileSize2 = 50;
 
         for (int i = 0; i < 9; i++)
         {
@@ -75,22 +89,18 @@ struct Graphics{
 
                 if (type > 0 && type < 37)
                 {
-                    int x = 32 + j * tileSize;
-                    int y = 32 + i * tileSize;
+                    int x = 280 + j * tileSize1;
+                    int y = 200 + i * tileSize2;
                     renderTexture(textures[type - 1], x, y);
 
                     if (i == pikachu.selectedX && j == pikachu.selectedY) {
                         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Màu vàng
-                        SDL_Rect highlightRect1 = { x, y, tileSize, tileSize };
-                        SDL_Rect highlightRect2 = { x + 1, y + 1, tileSize - 2, tileSize - 2 };
+                        SDL_Rect highlightRect1 = { x, y, tileSize1, tileSize2 };
+                        SDL_Rect highlightRect2 = { x + 1, y + 1, tileSize1 - 2, tileSize2 - 2 };
                         SDL_RenderDrawRect(renderer, &highlightRect1);
                         SDL_RenderDrawRect(renderer, &highlightRect2);
                     }
                 }
-
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Màu đen
-                SDL_Rect gridRect = { 32 + j * tileSize, 32 + i * tileSize, tileSize, tileSize };
-                SDL_RenderDrawRect(renderer, &gridRect);
             }
         }
     }
