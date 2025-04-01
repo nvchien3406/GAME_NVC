@@ -11,13 +11,13 @@ struct Graphics{
     SDL_Renderer *renderer;
     SDL_Window *window;
 
-    SDL_Texture *textures[20];
+    SDL_Texture *textures[36];
 
     void loadAllTextures()
     {
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 36; i++)
         {
-            std::string filename = "assets/" + std::to_string(i + 1) + ".jpg";
+            std::string filename = "assets/" + std::to_string(i + 1) + ".png";
             textures[i] = loadTexture(filename.c_str());
 
             if (textures[i] == nullptr)
@@ -30,14 +30,14 @@ struct Graphics{
 
     void handleMouseClick(int x, int y, Pikachu& pikachu) {
         int gridSize = pikachu.rows;
-        int tileSize = 64;
+        int tileSize = 40;
 
         //Chuyển tọa độ thành ô
         int i = (y - 32) / tileSize;
         int j = (x - 32) / tileSize;
 
 
-        if (i >= 0 && i < gridSize && j >= 0 && j < gridSize) {
+        if (i >= 0 && i < 9 && j >= 0 && j < 16) {
             int tile = pikachu.mp[i][j];
             if (tile != 0) {
 
@@ -63,17 +63,17 @@ struct Graphics{
         }
     }
 
-    void drawMap(int mp[MAX_SIZE][MAX_SIZE], int gridSize, Pikachu &pikachu)
+    void drawMap(int mp[9][16]/*, int gridSize*/, Pikachu &pikachu)
     {
-        int tileSize = 64;
+        int tileSize = 40;
 
-        for (int i = 0; i < gridSize; i++)
+        for (int i = 0; i < 9; i++)
         {
-            for (int j = 0; j < gridSize; j++)
+            for (int j = 0; j < 16; j++)
             {
                 int type = mp[i][j];
 
-                if (type > 0 && type < 21)
+                if (type > 0 && type < 37)
                 {
                     int x = 32 + j * tileSize;
                     int y = 32 + i * tileSize;

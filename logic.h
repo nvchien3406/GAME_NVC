@@ -9,29 +9,29 @@
 #include <vector>
 
 struct Pikachu{
-    int mp[MAX_SIZE][MAX_SIZE];// ban do
+    int mp[9][16];// ban do
     int rows, cols;
 
     int selectedX = -1;
     int selectedY = -1;
 
-    void init(int size){
-        rows = size;
-        cols = size;
+    void init(){
+        rows = 9;
+        cols = 16;
         taoMap();
     }
     void taoMap(){
         srand(time(0));
         int totalTiles = rows * cols;
-        int numValues = 20; // Số con vật tối đa (1 -> 20)
+        int numValues = 36; //so con vat tu 1 -> 36
 
         std::vector<int> tileVal;
         std::vector<int> count(numValues + 1, 0);
         int sum = 0;
 
-        // Duyệt từng số từ 1 -> 20 và thêm vào tileVal với số lần chẵn ngẫu nhiên
+        // Duyệt từng số từ 1 -> 36 và thêm vào tileVal với số lần chẵn ngẫu nhiên
         for (int i = 1; i <= numValues && sum < totalTiles; i++) {
-            int add = 2 * ((rand() % 4) + 1); // Chọn số lần xuất hiện là chẵn (2, 4, 6, 8)
+            int add = 2 * ((rand() % 3) + 1); // Chọn số lần xuất hiện là chẵn (2, 4, 6, 8)
 
             if (sum + add > totalTiles) {
                 add = totalTiles - sum; // Nếu vượt quá tổng ô, chỉ thêm phần còn thiếu
@@ -199,7 +199,7 @@ struct Pikachu{
         if(rows + 2 <= MAX_SIZE && cols + 2 <= MAX_SIZE){
             rows += 2;
             cols += 2;
-            init(rows);
+            init();
         }else{
             exit(0);
         }

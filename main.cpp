@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     graphics.init();
 
     Pikachu pikachu;
-    pikachu.init(6);
+    pikachu.init();
     graphics.loadAllTextures();
 
     bool running = true;
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
         }
         // Vẽ và cập nhật màn hình
         graphics.prepareScene();
-        graphics.drawMap(pikachu.mp, pikachu.rows, pikachu);
+        graphics.drawMap(pikachu.mp/*, pikachu.rows*/, pikachu);
         graphics.presentScene();
 
         SDL_Delay(100);
