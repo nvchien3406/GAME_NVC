@@ -261,21 +261,22 @@ struct Pikachu{
         //1 diem ngoat
         if (clearRow(y1, y2, x1) && clearCol(x1, x2, y2) && mp[x1][y2] == 0){
             for(int i = miny; i <= maxy; i++){
-                v.push_back({minx, i});
+                v.push_back({x1, i});
             }
             for(int i = minx + 1; i <= maxx; i++){
-                v.push_back({i, maxy});
+                v.push_back({i, y2});
             }
             return v;
         }
         if (clearCol(x1, x2, y1) && clearRow(y1, y2, x2) && mp[x2][y1] == 0){
 
             for(int i = minx + 1; i <= maxx; i++){
-                v.push_back({i, miny});
+                v.push_back({i, y1});
             }
             for(int i = miny; i <= maxy; i++){
-                v.push_back({maxx, i});
+                v.push_back({x2, i});
             }
+            return v;
         }
 
         // 2 diem ngoat

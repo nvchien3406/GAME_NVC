@@ -51,7 +51,7 @@ struct Graphics{
                     if (pikachu.validmove(pikachu.selectedX, pikachu.selectedY, i, j)) {
                         std::vector<std::pair<int, int>> path = pikachu.duongdi(pikachu.selectedX, pikachu.selectedY, i, j);
                         if(!path.empty()){
-                            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                             for (size_t i = 0; i < path.size() - 1; i++) {
                                 int x1 = 280 + path[i].second * tileSize1 + tileSize1 / 2;
                                 int y1 = 200 + path[i].first * tileSize2 + tileSize2 / 2;
@@ -94,7 +94,7 @@ struct Graphics{
                     renderTexture(textures[type - 1], x, y);
 
                     if (i == pikachu.selectedX && j == pikachu.selectedY) {
-                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Màu vàng
+                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); // Màu do
                         SDL_Rect highlightRect1 = { x, y, tileSize1, tileSize2 };
                         SDL_Rect highlightRect2 = { x + 1, y + 1, tileSize1 - 2, tileSize2 - 2 };
                         SDL_RenderDrawRect(renderer, &highlightRect1);
