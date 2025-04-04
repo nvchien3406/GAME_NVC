@@ -260,27 +260,87 @@ struct Pikachu{
         }
         //1 diem ngoat
         if (clearRow(y1, y2, x1) && clearCol(x1, x2, y2) && mp[x1][y2] == 0){
-            for(int i = miny; i <= maxy; i++){
-                v.push_back({x1, i});
+            if(y1 > y2){
+                if(x1 > x2){
+                    for(int i = x2; i <= x1; i++){
+                        v.push_back({i, y2});
+                    }
+                    for(int i = y2 + 1; i <= y1; i++){
+                        v.push_back({x1, i});
+                    }
+
+                }else{
+                    for(int i = y1; i >= y2; i--){
+                        v.push_back({x1, i});
+                    }
+                    for(int i = x1; i <= x2; i++){
+                        v.push_back({i, y2});
+                    }
+                }
+            }else{
+                if(x1 > x2){
+                    for(int i = y1; i <= y2; i++){
+                        v.push_back({x1, i});
+                    }
+                    for(int i = x1; i >= x2; i--){
+                        v.push_back({i, y2});
+                    }
+
+                }else{
+                    for(int i = y1; i <= y2; i++){
+                        v.push_back({x1, i});
+                    }
+                    for(int i = x1; i <= x2; i++){
+                        v.push_back({i, y2});
+                    }
+                }
             }
-            for(int i = minx + 1; i <= maxx; i++){
-                v.push_back({i, y2});
-            }
+
             return v;
         }
         if (clearCol(x1, x2, y1) && clearRow(y1, y2, x2) && mp[x2][y1] == 0){
 
-            for(int i = minx + 1; i <= maxx; i++){
-                v.push_back({i, y1});
+            if(y1 > y2){
+                if(x1 > x2){
+                    for(int i = y2; i <= y1; i++){
+                        v.push_back({x2, i});
+                    }
+                    for(int i = x2; i <= x1; i++){
+                        v.push_back({i, y1});
+                    }
+
+                }else{
+                    for(int i = y2; i <= y1; i++){
+                        v.push_back({x2, i});
+                    }
+                    for(int i = x2; i >= x1; i--){
+                        v.push_back({i, y1});
+                    }
+                }
+            }else{
+                if(x1 > x2){
+                    for(int i = x1; i >= x2; i--){
+                        v.push_back({i, y1});
+                    }
+                    for(int i = y1; i <= y2; i++){
+                        v.push_back({x2, i});
+                    }
+
+                }else{
+                    for(int i = x1; i <= x2; i++){
+                        v.push_back({i, y1});
+                    }
+                    for(int i = y1; i <= y2; i++){
+                        v.push_back({x2, i});
+                    }
+                }
             }
-            for(int i = miny; i <= maxy; i++){
-                v.push_back({x2, i});
-            }
+
             return v;
         }
 
         // 2 diem ngoat
-        /*for (int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++) {
             if (mp[i][y1] == 0 && mp[i][y2] == 0
                 && clearCol(x1, i, y1)
                 && clearCol(x2, i, y2)
@@ -317,7 +377,7 @@ struct Pikachu{
             return true;
         if ((clearCol(x1, 0, y1) && clearCol(x2, 0, y2)) && mp[0][y1] == 0 && mp[0][y2] == 0 || (clearCol(x1, rows - 1, y1) && clearCol(x2, rows - 1, y2)) && mp[rows - 1][y1] == 0 && mp[rows - 1][y2] == 0)
             return true;
-        return false;*/
+        return false;
         return {};
     }
 };
