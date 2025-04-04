@@ -1,5 +1,5 @@
-#ifndef LOGIC_H_INCLUDED
-#define LOGIC_H_INCLUDED
+#ifndef LOGICTEST_H_INCLUDED
+#define LOGICTEST_H_INCLUDED
 
 #include "defs.h"
 #include <cstdlib>
@@ -7,7 +7,6 @@
 #include<algorithm>
 #include <unordered_map>
 #include <vector>
-#include <map>
 
 struct Pikachu{
     int mp[9][16];// ban do
@@ -219,18 +218,14 @@ struct Pikachu{
     }
 
     std::vector<std::pair<int, int>> duongdi(int x1, int y1, int x2, int y2){
-        std :: map<int, int> point;
-        point[x1] = y1;
-        point[x2] = y2;
-        point[y1] = x1;
-        point[y2] = x2;
+        if(!validmove(x1, y1, x2, y2)) return {};
+        if(mp[x1][y1] != mp[x2][y2] || mp[x1][y1] == 0 || (x1 == x2 && y1 == y2)) return {};
+        std::vector<std::pair<int, int>> v;
+        //Noi duong thang
         int minx = std::min(x1, x2);
         int maxx = std::max(x1, x2);
         int miny = std::min(y1, y2);
         int maxy = std::max(y1, y2);
-        if(!validmove(x1, y1, x2, y2)) return {};
-        std::vector<std::pair<int, int>> v;
-        //Noi duong thang
         if(x1 == x2 && clearRow(y1, y2, x1)){
             for(int i = miny; i <= maxy; i++){
                 v.push_back({x1, i});
@@ -326,213 +321,46 @@ struct Pikachu{
         }
 
         // 2 diem ngoat
-        for (int i = 0; i < rows; i++) {
-            if (mp[i][y1] == 0 && mp[i][y2] == 0 && clearCol(x1, i, y1) && clearCol(x2, i, y2) && clearRow(y1, y2, i)){
-                if(i < minx){
-                    for(int j = point[miny]; j >= i; j--){
-                        v.push_back({j, miny});
-                    }
-                    for(int j = miny; j<= maxy; j++){
-                        v.push_back({i, j});
-                    }
-                    for(int j = i; j <= point[maxy]; j++ ){
-                        v.push_back({j, maxy});
-                    }
-                }
-                else if(i > minx && i < maxx){
-                    if(point[maxx] < point[minx]){
-                        for(int j = maxx; j >= i; j--){
-                            v.push_back({j, miny});
-                        }
-                        for(int j = miny; j <= maxy; j++){
-                            v.push_back({i, j});
-                        }
-                        for(int j = i; j >= minx; j--){
-                            v.push_back({j, maxy});
-                        }
-                    }
-                    else{
-                        for(int j = minx; j<= i; j++){
-                            v.push_back({j, miny});
-                        }
-                        for(int j = miny; j <= maxy; j++){
-                            v.push_back({i, j});
-                        }
-                        for(int j = i; j<= maxx; j++){
-                            v.push_back({j, maxy});
-                        }
-                    }
-                }
-                else{
-                    for(int j = point[miny]; j <= i; j++){
-                        v.push_back({j, miny});
-                    }
-                    for(int j = miny; j<= maxy; j++){
-                        v.push_back({i, j});
-                    }
-                    for(int j = i; j >= point[maxy]; j-- ){
-                        v.push_back({j, maxy});
-                    }
-                }
-                return v;
-            }
-
+        /*for (int i = 0; i < rows; i++) {
+            if (mp[i][y1] == 0 && mp[i][y2] == 0
+                && clearCol(x1, i, y1)
+                && clearCol(x2, i, y2)
+                && clearRow(y1, y2, i))
+                return true;
         }
-        for (int i = 0; i < cols; i++) {
-            if (mp[x1][i] == 0 && mp[x2][i] == 0 && clearRow(y1, i, x1) && clearRow(y2, i, x2) && clearCol(x1, x2, i)){
-                if(i < miny){
-                    for(int j = point[minx]; j >= i; j--){
-                        v.push_back({minx, j});
-                    }
-                    for(int j = minx; j<= maxx; j++){
-                        v.push_back({j, i});
-                    }
-                    for(int j = i; j <= point[maxx]; j++ ){
-                        v.push_back({maxx, j});
-                    }
-                }
-                else if(i > miny && i < maxy){
-                    if(point[maxy] < point[miny]){
-                        for(int j = maxy; j >= i; j--){
-                            v.push_back({minx, j});
-                        }
-                        for(int j = minx; j <= maxx; j++){
-                            v.push_back({j, i});
-                        }
-                        for(int j = i; j >= miny; j--){
-                            v.push_back({maxx, j});
-                        }
-                    }
-                    else{
-                        for(int j = miny; j<= i; j++){
-                            v.push_back({minx, j});
-                        }
-                        for(int j = minx; j <= maxx; j++){
-                            v.push_back({j, i});
-                        }
-                        for(int j = i; j<= maxy; j++){
-                            v.push_back({maxx, j});
-                        }
-                    }
-                }
-                else{
-                    for(int j = point[minx]; j <= i; j++){
-                        v.push_back({minx, j});
-                    }
-                    for(int j = minx; j<= maxx; j++){
-                        v.push_back({j, i});
-                    }
-                    for(int j = i; j >= point[maxx]; j-- ){
-                        v.push_back({maxx, j});
-                    }
-                }
-                return v;
-            }
-        }
+        for (int j = 0; j < cols; j++) {
+            if (mp[x1][j] == 0 && mp[x2][j] == 0
+                && clearRow(y1, j, x1)
+                && clearRow(y2, j, x2)
+                && clearCol(x1, x2, j))
+                return true;
+        }*/
 
         //Truong hop ra bien
-        if((clearRow(y1, 16, x1) && clearRow(y2, 16, x2)) || (clearRow(y1, -1, x1) && clearRow(y2, -1, x2) )){
-            if(clearRow(y1, 16, x1) && clearRow(y2, 16, x2)){
-                if(x1 < x2){
-                    for(int i = y1; i <= 16; i++){
-                        v.push_back({x1, i});
-                    }
-                    for(int i = x1; i <= x2; i++){
-                        v.push_back({i,16});
-                    }
-                    for(int i = 16; i >= y2; i--){
-                        v.push_back({x2, i});
-                    }
-                }else{
-                    for(int i = y2; i <= 16; i++){
-                        v.push_back({x2, i});
-                    }
-                    for(int i = x2;i<= x1; i++){
-                        v.push_back({i, 16});
-                    }
-                    for(int i = 16; i >= y1; i--){
-                        v.push_back({x1, i});
-                    }
-                }
-            }
-            else{
-                if(x1 < x2){
-                    for(int i = y1; i >= -1; i--){
-                        v.push_back({x1, i});
-                    }
-                    for(int i = x1; i <= x2; i++){
-                        v.push_back({i, -1});
-                    }
-                    for(int i = -1; i <= y2; i++){
-                        v.push_back({x2, i});
-                    }
-                }
-                else{
-                    for(int i = y2; i >= -1; i--){
-                        v.push_back({x2, i});
-                    }
-                    for(int i = x2; i <= x1; i++){
-                        v.push_back({i, -1});
-                    }
-                    for(int i = -1; i <= y1; i++){
-                        v.push_back({x1, i});
-                    }
-                }
-            }
-            return v;
+        /*if((x1 == 0 && x2 == 0) || (x1 == rows - 1 && x2 == rows - 1) || (y1 == 0 && y2 == 0) || (y1 == cols - 1 && y2 == cols - 1)) return true;
+        if(y1 == 0 || y1 == cols - 1){
+            if ((clearRow(y1, 0, x1) && clearRow(y2, 0, x2)) && mp[x2][0] == 0|| (clearRow(y1, cols - 1, x1) && clearRow(y2, cols - 1, x2)) && mp[x2][cols - 1] == 0)
+                return true;
         }
-        if((clearCol(-1, x1, y1) && clearCol(-1, x2, y2))|| (clearCol(9, x1, y1) && clearCol(9, x2, y2))){
-            if(clearCol(-1, x1, y1) && clearCol(-1, x2, y2)){
-                if(y1 < y2){
-                    for(int i = x1; i >= -1; i--){
-                        v.push_back({i, y1});
-                    }
-                    for(int i = y1; i <= y2; i++){
-                        v.push_back({-1, i});
-                    }
-                    for(int i = -1; i <= x2; i++){
-                        v.push_back({i, y2});
-                    }
-                }
-                else{
-                    for(int i = x2; i >= -1; i--){
-                        v.push_back({i, y2});
-                    }
-                    for(int i = y2; i <= y1; i++){
-                        v.push_back({-1, i});
-                    }
-                    for(int i = -1; i <= x1; i++){
-                        v.push_back({i, y1});
-                    }
-                }
-            }else{
-                if(y1 < y2){
-                    for(int i = x1; i <= 9; i++){
-                        v.push_back({i, y1});
-                    }
-                    for(int i = y1; i <= y2; i++){
-                        v.push_back({9, i});
-                    }
-                    for(int i = 9; i >= x2; i--){
-                        v.push_back({i, y2});
-                    }
-                }
-                else{
-                    for(int i = x2; i <= 9; i++){
-                        v.push_back({i, y2});
-                    }
-                    for(int i = y2; i <= y1; i++){
-                        v.push_back({9, i});
-                    }
-                    for(int i = 9; i >= x1; i--){
-                        v.push_back({i, y1});
-                    }
-                }
-            }
-            return v;
+        if(y2 == 0 || y2 == cols - 1){
+            if ((clearRow(y1, 0, x1) && clearRow(y2, 0, x2)) && mp[x1][0] == 0|| (clearRow(y1, cols - 1, x1) && clearRow(y2, cols - 1, x2))&& mp[x1][cols - 1] == 0)
+                return true;
         }
+        if(x1 == 0 || x1 == rows - 1){
+            if ((clearCol(x1, 0, y1) && clearCol(x2, 0, y2)) && mp[0][y2] == 0 || (clearCol(x1, rows - 1, y1) && clearCol(x2, rows - 1, y2)) && mp[rows - 1][y2] == 0)
+                return true;
+        }
+        if(x2 == 0 || x2 == rows - 1){
+            if ((clearCol(x1, 0, y1) && clearCol(x2, 0, y2)) && mp[0][y1] == 0 || (clearCol(x1, rows - 1, y1) && clearCol(x2, rows - 1, y2)) && mp[rows - 1][y1] == 0)
+                return true;
+        }
+        if ((clearRow(y1, 0, x1) && clearRow(y2, 0, x2)) && mp[x1][0] == 0 && mp[x2][0] == 0|| (clearRow(y1, cols - 1, x1) && clearRow(y2, cols - 1, x2))&& mp[x1][cols - 1] == 0 && mp[x2][cols - 1] == 0)
+            return true;
+        if ((clearCol(x1, 0, y1) && clearCol(x2, 0, y2)) && mp[0][y1] == 0 && mp[0][y2] == 0 || (clearCol(x1, rows - 1, y1) && clearCol(x2, rows - 1, y2)) && mp[rows - 1][y1] == 0 && mp[rows - 1][y2] == 0)
+            return true;
+        return false;*/
         return {};
     }
 };
 
-#endif // LOGIC_H_INCLUDED
+#endif // LOGICTEST_H_INCLUDED
