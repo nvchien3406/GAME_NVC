@@ -13,6 +13,7 @@ struct Graphics{
 
     SDL_Texture *textures[36];
 
+    SDL_Texture *background = nullptr;
     void loadAllTextures()
     {
         for (int i = 0; i < 36; i++)
@@ -24,6 +25,10 @@ struct Graphics{
             {
                 SDL_Log("Failed to load %s", filename.c_str());
             }
+        }
+        background = IMG_LoadTexture(renderer, "image/background.jpg");
+        if (!background) {
+            std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
         }
     }
 
@@ -58,6 +63,11 @@ struct Graphics{
                                 int x2 = 280 + path[i + 1].second * tileSize1 + tileSize1 / 2;
                                 int y2 = 200 + path[i + 1].first * tileSize2 + tileSize2 / 2;
                                 SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+                                SDL_RenderDrawLine(renderer, x1+1, y1+1, x2+1, y2+1);
+                                SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
+                                SDL_RenderDrawLine(renderer, x1+1, y1-1, x2+1, y2-1);
+                                SDL_RenderDrawLine(renderer, x1-1, y1+1, x2-1, y2+1);
+                                SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
                             }
                             SDL_RenderPresent(renderer);
                             SDL_Delay(300);
@@ -145,14 +155,16 @@ struct Graphics{
 
     void prepareScene()
     {
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+
     }
 
     void prepareScene(SDL_Texture * background)
     {
         SDL_RenderClear(renderer);
-        SDL_RenderCopy( renderer, background, NULL, NULL);
+        SDL_RenderCopy( renderer, background, nullptr, nullptr);
     }
     //hien thi hinh anh
     void presentScene()
@@ -201,7 +213,10 @@ struct Graphics{
         Mix_Quit();
         TTF_Quit();
         IMG_Quit();
-
+        if (background) {
+            SDL_DestroyTexture(background);
+            background = nullptr;
+        }
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();

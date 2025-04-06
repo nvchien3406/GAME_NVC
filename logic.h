@@ -177,15 +177,6 @@ struct Pikachu{
         }
         return true;
     }
-    void nextLevel(){
-        if(rows + 2 <= MAX_SIZE && cols + 2 <= MAX_SIZE){
-            rows += 2;
-            cols += 2;
-            init();
-        }else{
-            exit(0);
-        }
-    }
 
 
     //Neu khong con duong di thi xao tron

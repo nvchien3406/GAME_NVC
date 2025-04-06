@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
             exit(0);
         }
         // Vẽ và cập nhật màn hình
-        graphics.prepareScene();
+        graphics.prepareScene(graphics.background);
         graphics.drawMap(pikachu.mp/*, pikachu.rows*/, pikachu);
         graphics.presentScene();
 
@@ -56,6 +56,5 @@ int main(int argc, char* argv[])
 
     graphics.quit();
     SDL_Quit();
-    cout << "Main function ending now.\n";
     return 0;
 }
