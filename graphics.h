@@ -14,6 +14,7 @@ struct Graphics{
     SDL_Texture *textures[36];
 
     SDL_Texture *background = nullptr;
+
     void loadAllTextures()
     {
         for (int i = 0; i < 36; i++)
@@ -213,6 +214,12 @@ struct Graphics{
         Mix_Quit();
         TTF_Quit();
         IMG_Quit();
+        for (int i = 0; i < 36; ++i) {
+            if (textures[i]) {
+                SDL_DestroyTexture(textures[i]);
+                textures[i] = nullptr;
+            }
+        }
         if (background) {
             SDL_DestroyTexture(background);
             background = nullptr;
