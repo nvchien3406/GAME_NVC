@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 #include "defs.h"
 #include "logic.h"
+#include "button.h"
 
 struct Graphics{
     SDL_Renderer *renderer;
@@ -14,6 +15,61 @@ struct Graphics{
     SDL_Texture *textures[36];
 
     SDL_Texture *background = nullptr;
+
+    void initButton(SDL_Renderer* renderer, std::vector<Button*> &button, std::vector<Goiy*> &goiy){
+        //goi y
+        SDL_Texture* goiyTextures[6];
+        for (int i = 0; i < 6; ++i) {
+            std::string path = "assets/goiy" + std::to_string(i + 1) + ".jpg";
+            goiyTextures[i] = IMG_LoadTexture(renderer, path.c_str());
+        }
+
+        SDL_Rect goiyRect = {350, 40, 90, 50}; // vị trí bạn muốn
+        Goiy* goiyBtn = new Goiy(goiyTextures, goiyRect);
+        goiy.push_back(goiyBtn);
+        //nut
+        SDL_Rect baseRect1 = {40,40,150,100};
+        SDL_Texture* texture1 = IMG_LoadTexture(renderer, "assets/New.png");
+        Button* New = new Button(texture1, baseRect1, "New");
+        button.push_back(New);
+
+        SDL_Rect baseRect2 = {40,660,150,100};
+        SDL_Texture* texture2 = IMG_LoadTexture(renderer, "assets/exit.jpg");
+        Button* Exit = new Button(texture2, baseRect2, "Exit");
+        button.push_back(Exit);
+
+        SDL_Rect baseRect3 = {1000,40,150,100};
+        SDL_Texture* texture3 = IMG_LoadTexture(renderer, "assets/score.jpg");
+        Button* Score = new Button(texture3, baseRect3, "Score");
+        button.push_back(Score);
+
+        SDL_Rect baseRect4 = {670,40,90,50};
+        SDL_Texture* texture4 = IMG_LoadTexture(renderer, "assets/pause.jpg");
+        Button* Pause = new Button(texture4, baseRect4, "Pause");
+        button.push_back(Pause);
+
+        SDL_Rect baseRect7 = {670,40,90,50};
+        SDL_Texture* texture7 = IMG_LoadTexture(renderer, "assets/play.jpg");
+        Button* Play = new Button(texture7, baseRect7, "Play");
+        button.push_back(Play);
+
+        SDL_Rect baseRect5 = {670,700,90,50};
+        SDL_Texture* texture5 = IMG_LoadTexture(renderer, "assets/luyen.jpg");
+        Button* Luyen = new Button(texture5, baseRect5, "Luyen");
+        button.push_back(Luyen);
+
+        SDL_Rect baseRect6 = {350,700,90,50};
+        SDL_Texture* texture6 = IMG_LoadTexture(renderer, "assets/volume1.jpg");
+        Button* Volume1 = new Button(texture6, baseRect6, "Volume1");
+        button.push_back(Volume1);
+
+        SDL_Rect baseRect8 = {1000,320,150,150};
+        SDL_Texture* texture8 = IMG_LoadTexture(renderer, "assets/clock.jpg");
+        Button* Clock = new Button(texture8, baseRect8, "Clock");
+        button.push_back(Clock);
+    }
+
+
 
     void loadAllTextures()
     {
@@ -27,14 +83,14 @@ struct Graphics{
                 SDL_Log("Failed to load %s", filename.c_str());
             }
         }
-        background = IMG_LoadTexture(renderer, "image/background.jpg");
+        background = IMG_LoadTexture(renderer, "image/background.png");
         if (!background) {
             std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
         }
     }
 
 
-    void handleMouseClick(int x, int y, Pikachu& pikachu) {
+    void handleMouseClick(int x, int y, Pikachu& pikachu, int &score) {
         int gridSize = pikachu.rows;
         int tileSize1 = 40;
         int tileSize2 = 50;
@@ -74,6 +130,7 @@ struct Graphics{
                             SDL_Delay(300);
                         }
                         pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
+                        score += 10;
 
                         pikachu.selectedX = -1;
                         pikachu.selectedY = -1;
@@ -87,8 +144,30 @@ struct Graphics{
         }
     }
 
-    void drawMap(int mp[9][16]/*, int gridSize*/, Pikachu &pikachu)
+    void clicktoGoiy(SDL_Renderer* renderer,Pikachu& pikachu){
+        int tileSize1 = 40;
+        int tileSize2 = 50;
+        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        for(size_t i = 0; i < pikachu.hintPath.size() - 1; i++){
+            int x1 = 280 + pikachu.hintPath[i].second * tileSize1 + tileSize1 / 2;
+            int y1 = 200 + pikachu.hintPath[i].first * tileSize2 + tileSize2 / 2;
+            int x2 = 280 + pikachu.hintPath[i + 1].second * tileSize1 + tileSize1 / 2;
+            int y2 = 200 + pikachu.hintPath[i + 1].first * tileSize2 + tileSize2 / 2;
+            SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+            SDL_RenderDrawLine(renderer, x1+1, y1+1, x2+1, y2+1);
+            SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
+            SDL_RenderDrawLine(renderer, x1+1, y1-1, x2+1, y2-1);
+            SDL_RenderDrawLine(renderer, x1-1, y1+1, x2-1, y2+1);
+            SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
+        }
+        SDL_RenderPresent(renderer);
+        SDL_Delay(800);
+
+    }
+
+    void drawMap(int mp[9][16]/*, int gridSize*/, Pikachu &pikachu, bool isPause)
     {
+        if(isPause) return;
         int tileSize1 = 40;
         int tileSize2 = 50;
 
@@ -172,7 +251,6 @@ struct Graphics{
     {
         SDL_RenderPresent(renderer);
     }
-    //load hinh anh len renderer
     SDL_Texture *loadTexture(const char *filename)
     {
         SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_INFO, "Loading %s", filename);
@@ -183,7 +261,6 @@ struct Graphics{
 
         return texture;
     }
-
     // ve texture len renderer
     void renderTexture(SDL_Texture *texture, int x, int y)
     {
@@ -289,6 +366,36 @@ struct Graphics{
     void play(Mix_Chunk* gChunk) {
         if (gChunk != nullptr) {
             Mix_PlayChannel( -1, gChunk, 0 );
+        }
+    }
+
+    void drawTime(SDL_Renderer* renderer, TTF_Font* font, int remainingTime) {
+        int minutes = remainingTime / 60;
+        int seconds = remainingTime % 60;
+
+        char buffer[10];
+        sprintf(buffer, "%02d:%02d", minutes, seconds);
+
+        SDL_Color color = {255, 255, 255}; // màu trắng
+        SDL_Texture* timeTexture = renderText(buffer, font, color);
+        if (timeTexture) {
+            int tw, th;
+            SDL_QueryTexture(timeTexture, NULL, NULL, &tw, &th);
+            SDL_Rect dst = {1000, 510, tw, th}; // Vị trí dưới hình đồng hồ
+            SDL_RenderCopy(renderer, timeTexture, NULL, &dst);
+            SDL_DestroyTexture(timeTexture);
+        }
+    }
+    void drawScore(SDL_Renderer* renderer, TTF_Font* font, int score) {
+        std::string scoreText = std::to_string(score);
+        SDL_Color color = {255, 255, 255}; // Màu trắng
+        SDL_Texture* scoreTexture = renderText(scoreText.c_str(), font, color);
+        if (scoreTexture) {
+            int tw, th;
+            SDL_QueryTexture(scoreTexture, NULL, NULL, &tw, &th);
+            SDL_Rect dst = {1000, 160, tw, th}; // Vị trí dưới nút Score
+            SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
+            SDL_DestroyTexture(scoreTexture);
         }
     }
 };

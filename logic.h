@@ -1,7 +1,9 @@
 #ifndef LOGIC_H_INCLUDED
 #define LOGIC_H_INCLUDED
 
+#include "level.h"
 #include "defs.h"
+#include "button.h"
 #include <cstdlib>
 #include <ctime>
 #include<algorithm>
@@ -16,23 +18,27 @@ struct Pikachu{
     int selectedX = -1;
     int selectedY = -1;
 
-    void init(){
+    std::pair<int, int> hintA = {-1, -1};
+    std::pair<int, int> hintB = {-1, -1};
+    std::vector<std::pair<int, int>> hintPath;
+
+    void init(int imgcount){
         rows = 9;
         cols = 16;
-        taoMap();
+        taoMap(imgcount);
     }
-    void taoMap(){
+    void taoMap(int numValues){
         srand(time(0));
         int totalTiles = rows * cols;
-        int numValues = 36; //so con vat tu 1 -> 36
+        //int numValues = 36; //so con vat tu 1 -> 36
 
         std::vector<int> tileVal;
         std::vector<int> count(numValues + 1, 0);
         int sum = 0;
 
-        // Duyệt từng số từ 1 -> 36 và thêm vào tileVal với số lần chẵn ngẫu nhiên
+        // Duyệt từng số từ 1 -> numvalues và thêm vào tileVal với số lần chẵn ngẫu nhiên
         for (int i = 1; i <= numValues && sum < totalTiles; i++) {
-            int add = 2 * ((rand() % 3) + 1); // Chọn số lần xuất hiện là chẵn (2, 4, 6, 8)
+            int add = 2 * ((rand() % 3) + 1); // Chọn số lần xuất hiện là chẵn (2, 4, 6)
 
             if (sum + add > totalTiles) {
                 add = totalTiles - sum; // Nếu vượt quá tổng ô, chỉ thêm phần còn thiếu
@@ -523,6 +529,38 @@ struct Pikachu{
             return v;
         }
         return {};
+    }
+
+    void click_Goiy(){
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(mp[i][j] == 0) continue;
+                for(int k = 0; k < rows; k++){
+                    for(int m = 0; m < cols; m++){
+                        if(validmove(i, j, k, m)){
+                            hintA = {i, j};
+                            hintB = {k, m};
+                            hintPath = duongdi(i, j, k, m);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    void handleWin(int& currentLevel, int& remainingTime, const std::vector<Level>& gameLevels,const std::vector<Goiy*>& goiy) {
+        currentLevel++;
+        if (currentLevel >= gameLevels.size()) {
+            currentLevel = 0; // Quay lại level 1
+        }
+
+        init(gameLevels[currentLevel].imgcount); // Khởi tạo lại map
+        remainingTime = gameLevels[currentLevel].timelimit;
+        for(auto&g : goiy){
+            g->click = 6;
+            g->texture = g->textures[5];
+            g->currentRect = g->baseRect;
+        }
     }
 };
 
