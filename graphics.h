@@ -7,8 +7,11 @@
 #include "defs.h"
 #include "logic.h"
 #include "button.h"
+#include "audio.h"
+
 
 struct Graphics{
+    Audio audio;
     SDL_Renderer *renderer;
     SDL_Window *window;
 
@@ -63,6 +66,11 @@ struct Graphics{
         Button* Volume1 = new Button(texture6, baseRect6, "Volume1");
         button.push_back(Volume1);
 
+        SDL_Rect baseRect9 = {350,700,90,50};
+        SDL_Texture* texture9 = IMG_LoadTexture(renderer, "assets/volume2.jpg");
+        Button* Volume2 = new Button(texture9, baseRect9, "Volume2");
+        button.push_back(Volume2);
+
         SDL_Rect baseRect8 = {1000,320,150,150};
         SDL_Texture* texture8 = IMG_LoadTexture(renderer, "assets/clock.jpg");
         Button* Clock = new Button(texture8, baseRect8, "Clock");
@@ -90,7 +98,7 @@ struct Graphics{
     }
 
 
-    void handleMouseClick(int x, int y, Pikachu& pikachu, int &score) {
+    void handleMouseClick(int x, int y, Pikachu& pikachu, int &score, bool isMuted) {
         int gridSize = pikachu.rows;
         int tileSize1 = 40;
         int tileSize2 = 50;
@@ -105,12 +113,17 @@ struct Graphics{
             if (tile != 0) {
 
                 if (pikachu.selectedX == -1 && pikachu.selectedY == -1) {
-
+                    if(!isMuted)
+                        audio.play(audio.click);
                     pikachu.selectedX = i;
                     pikachu.selectedY = j;
-                } else {
 
+                } else {
+                    if(!isMuted)
+                        audio.play(audio.click);
                     if (pikachu.validmove(pikachu.selectedX, pikachu.selectedY, i, j)) {
+                        if(!isMuted)
+                            audio.play(audio.linked);
                         std::vector<std::pair<int, int>> path = pikachu.duongdi(pikachu.selectedX, pikachu.selectedY, i, j);
                         if(!path.empty()){
                             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
@@ -126,16 +139,19 @@ struct Graphics{
                                 SDL_RenderDrawLine(renderer, x1-1, y1+1, x2-1, y2+1);
                                 SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
                             }
+
                             SDL_RenderPresent(renderer);
                             SDL_Delay(300);
                         }
                         pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
+
                         score += 10;
 
                         pikachu.selectedX = -1;
                         pikachu.selectedY = -1;
                     } else {
-
+                        if(!isMuted)
+                            audio.play(audio.oho);
                         pikachu.selectedX = -1;
                         pikachu.selectedY = -1;
                     }
@@ -161,7 +177,7 @@ struct Graphics{
             SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
         }
         SDL_RenderPresent(renderer);
-        SDL_Delay(800);
+        SDL_Delay(700);
 
     }
 
@@ -231,6 +247,7 @@ struct Graphics{
         {
             logErrorAndExit( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         }
+        audio.init();
     }
 
     void prepareScene()
@@ -288,7 +305,6 @@ struct Graphics{
 
     void quit()
     {
-        Mix_Quit();
         TTF_Quit();
         IMG_Quit();
         for (int i = 0; i < 36; ++i) {

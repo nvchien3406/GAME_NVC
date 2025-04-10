@@ -339,24 +339,24 @@ struct Pikachu{
                 else if(i > minx && i < maxx){
                     if(point[maxx] < point[minx]){
                         for(int j = maxx; j >= i; j--){
-                            v.push_back({j, miny});
+                            v.push_back({j, point[maxx]});
                         }
                         for(int j = miny; j <= maxy; j++){
                             v.push_back({i, j});
                         }
                         for(int j = i; j >= minx; j--){
-                            v.push_back({j, maxy});
+                            v.push_back({j, point[minx]});
                         }
                     }
                     else{
                         for(int j = minx; j<= i; j++){
-                            v.push_back({j, miny});
+                            v.push_back({j, point[minx]});
                         }
                         for(int j = miny; j <= maxy; j++){
                             v.push_back({i, j});
                         }
                         for(int j = i; j<= maxx; j++){
-                            v.push_back({j, maxy});
+                            v.push_back({j, point[maxx]});
                         }
                     }
                 }

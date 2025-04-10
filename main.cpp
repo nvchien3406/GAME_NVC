@@ -8,6 +8,7 @@
 #include "logic.h"
 #include "button.h"
 #include "level.h"
+#include "audio.h"
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -24,13 +25,15 @@ int main(int argc, char* argv[])
     Pikachu pikachu;
     pikachu.init(gameLevels[currentLevel].imgcount);
     graphics.loadAllTextures();
+
     TTF_Font* font = graphics.loadFont("assets/dlxfont_.ttf", 28);
 
     std::vector<Button*> buttons;
     std::vector<Goiy*> goiy;
     graphics.initButton(graphics.renderer, buttons, goiy);
 
-    bool isPause = false;
+
+    bool isPause = false, isMuted = false;
 
     bool running = true;
     SDL_Event e;
@@ -82,6 +85,10 @@ int main(int argc, char* argv[])
                         else if (btn->id == "Exit") {
                             running = false;
                         }
+                        else if(btn->id == "Volume1"){
+                            isMuted = !isMuted;
+
+                        }
                         else if (btn->id == "New") {
                             currentLevel = 0;
                             score = 0;
@@ -111,7 +118,10 @@ int main(int argc, char* argv[])
                     }
                 }
                 if(!isPause)
-                    graphics.handleMouseClick(x, y, pikachu, score);
+
+                    graphics.handleMouseClick(x, y, pikachu, score, isMuted);
+
+
 
             }
         }
@@ -120,21 +130,35 @@ int main(int argc, char* argv[])
                 pikachu.xaotron();
             }
         }else{
+            graphics.audio.play(graphics.audio.win);
             pikachu.handleWin(currentLevel, remainingTime, gameLevels, goiy);
+            SDL_Delay(200);
         }
         // Vẽ và cập nhật màn hình
         SDL_RenderClear(graphics.renderer);
         graphics.prepareScene(graphics.background);
         for (auto& btn : buttons){
             if(!isPause){
-                if(btn->id != "Play")
-                    btn->render(graphics.renderer);
+                if(!isMuted){
+                    if(btn->id != "Play" && btn->id != "Volume2")
+                        btn->render(graphics.renderer);
+                }else{
+                    if(btn->id != "Play" && btn->id != "Volume1")
+                        btn->render(graphics.renderer);
+                }
+
             }
-            else{
-                if(btn->id != "Pause")
-                    btn->render(graphics.renderer);
+            else {
+                if(!isMuted){
+                    if(btn->id != "Pause" && btn->id != "Volume2")
+                        btn->render(graphics.renderer);
+                }else{
+                    if(btn->id != "Pause" && btn->id != "Volume1")
+                        btn->render(graphics.renderer);
+                }
             }
         }
+
         for (auto& g : goiy) {
             if (g->shouldRender()) {
                 g->render(graphics.renderer);
