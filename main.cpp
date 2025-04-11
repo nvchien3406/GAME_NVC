@@ -9,13 +9,14 @@
 #include "button.h"
 #include "level.h"
 #include "audio.h"
+
 using namespace std;
 
 int main(int argc, char* argv[])
 {
 
     Uint32 lastTick = SDL_GetTicks();
-    int currentLevel = 0;
+    int currentLevel = 5;
     int remainingTime = gameLevels[currentLevel].timelimit;
     int score = 0;
 
@@ -27,6 +28,7 @@ int main(int argc, char* argv[])
     graphics.loadAllTextures();
 
     TTF_Font* font = graphics.loadFont("assets/dlxfont_.ttf", 28);
+    TTF_Font* font1 = graphics.loadFont("assets/dlxfont_.ttf", 40);
 
     std::vector<Button*> buttons;
     std::vector<Goiy*> goiy;
@@ -167,6 +169,9 @@ int main(int argc, char* argv[])
         graphics.drawMap(pikachu.mp/*, pikachu.rows*/, pikachu, isPause);
         graphics.drawTime(graphics.renderer, font, remainingTime);
         graphics.drawScore(graphics.renderer, font, score);
+        graphics.drawScore1(graphics.renderer, font1);
+        graphics.drawLevel(graphics.renderer, font1);
+        graphics.drawLevel1(graphics.renderer, font1, currentLevel + 1);
         graphics.presentScene();
         SDL_Delay(100);
     }

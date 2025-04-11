@@ -41,11 +41,6 @@ struct Graphics{
         Button* Exit = new Button(texture2, baseRect2, "Exit");
         button.push_back(Exit);
 
-        SDL_Rect baseRect3 = {1000,40,150,100};
-        SDL_Texture* texture3 = IMG_LoadTexture(renderer, "assets/score.jpg");
-        Button* Score = new Button(texture3, baseRect3, "Score");
-        button.push_back(Score);
-
         SDL_Rect baseRect4 = {670,40,90,50};
         SDL_Texture* texture4 = IMG_LoadTexture(renderer, "assets/pause.jpg");
         Button* Pause = new Button(texture4, baseRect4, "Pause");
@@ -402,6 +397,18 @@ struct Graphics{
             SDL_DestroyTexture(timeTexture);
         }
     }
+    void drawScore1(SDL_Renderer* renderer, TTF_Font* font) {
+        std::string scoreText = "SCORE";
+        SDL_Color color = {255, 255, 255}; // Màu trắng
+        SDL_Texture* scoreTexture = renderText(scoreText.c_str(), font, color);
+        if (scoreTexture) {
+            int tw, th;
+            SDL_QueryTexture(scoreTexture, NULL, NULL, &tw, &th);
+            SDL_Rect dst = {950, 65, tw, th}; // Vị trí dưới nút Score
+            SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
+            SDL_DestroyTexture(scoreTexture);
+        }
+    }
     void drawScore(SDL_Renderer* renderer, TTF_Font* font, int score) {
         std::string scoreText = std::to_string(score);
         SDL_Color color = {255, 255, 255}; // Màu trắng
@@ -412,6 +419,30 @@ struct Graphics{
             SDL_Rect dst = {1000, 160, tw, th}; // Vị trí dưới nút Score
             SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
             SDL_DestroyTexture(scoreTexture);
+        }
+    }
+    void drawLevel(SDL_Renderer* renderer, TTF_Font* font) {
+        std::string levelText = "LEVEL";
+        SDL_Color color = {255, 255, 255}; // Màu trắng
+        SDL_Texture* levelTexture = renderText(levelText.c_str(), font, color);
+        if (levelTexture) {
+            int tw, th;
+            SDL_QueryTexture(levelTexture, NULL, NULL, &tw, &th);
+            SDL_Rect dst = {40, 250, tw, th}; // Vị trí dưới nút Score
+            SDL_RenderCopy(renderer, levelTexture, NULL, &dst);
+            SDL_DestroyTexture(levelTexture);
+        }
+    }
+    void drawLevel1(SDL_Renderer* renderer, TTF_Font* font, int x) {
+        std::string levelText = std::to_string(x);
+        SDL_Color color = {255, 255, 255}; // Màu trắng
+        SDL_Texture* levelTexture = renderText(levelText.c_str(), font, color);
+        if (levelTexture) {
+            int tw, th;
+            SDL_QueryTexture(levelTexture, NULL, NULL, &tw, &th);
+            SDL_Rect dst = {100, 350, tw, th}; // Vị trí dưới nút Score
+            SDL_RenderCopy(renderer, levelTexture, NULL, &dst);
+            SDL_DestroyTexture(levelTexture);
         }
     }
 };
