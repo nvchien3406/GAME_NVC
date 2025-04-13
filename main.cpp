@@ -14,6 +14,7 @@ int main(int argc, char* argv[])
 
     Uint32 lastTick = SDL_GetTicks();
     int currentLevel = 0, remainingTime = gameLevels[currentLevel].timelimit, score = 0;
+    int clickGoiy = 6;
 
     Graphics graphics;
     graphics.init();
@@ -23,11 +24,9 @@ int main(int argc, char* argv[])
     graphics.loadAllTextures();
 
     TTF_Font* font = graphics.loadFont("assets/ttf/dlxfont_.ttf", 25);
-    //TTF_Font* font1 = graphics.loadFont("assets/dlxfont_.ttf", 40);
 
     std::vector<Button*> buttons;
-    Goiy* goiy;
-    graphics.initButton(graphics.renderer, buttons, goiy);
+    graphics.initButton(graphics.renderer, buttons);
 
     bool isPause = false, isMuted = false;
     bool running = true, isPracticeMode = false;
@@ -38,17 +37,17 @@ int main(int argc, char* argv[])
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) running = false;
-            handleEvents(e, buttons, goiy, graphics, pikachu, score, isMuted, isPause, currentLevel, remainingTime, isPracticeMode);
+            handleEvents(e, buttons, graphics, pikachu, score, isMuted, isPause, currentLevel, remainingTime, isPracticeMode, clickGoiy);
         }
 
         if (!pikachu.isclear() && !pikachu.hasmove()) pikachu.xaotron();
-        else if (pikachu.isclear()) handleWin(graphics, pikachu, currentLevel, remainingTime, goiy);
+        else if (pikachu.isclear()) handleWin(graphics, pikachu, currentLevel, remainingTime, clickGoiy);
 
-        renderScene(graphics, pikachu, score, remainingTime, font, isPause, isMuted, isPracticeMode, buttons, goiy, currentLevel);
+        renderScene(graphics, pikachu, score, remainingTime, font, isPause, isMuted, isPracticeMode, buttons, clickGoiy, currentLevel);
         SDL_Delay(100);
     }
 
-    graphics.quit(buttons, goiy, font);
+    graphics.quit(buttons, font);
     SDL_Quit();
     return 0;
 }

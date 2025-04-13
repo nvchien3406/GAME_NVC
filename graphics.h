@@ -19,15 +19,7 @@ struct Graphics{
 
     SDL_Texture *background = nullptr;
 
-    void initButton(SDL_Renderer* renderer, std::vector<Button*> &button, Goiy* &goiy){
-        //goi y
-        SDL_Texture* goiytexture;
-        std::string path = "assets/image/button/goiy.png";
-        goiytexture = IMG_LoadTexture(renderer, path.c_str());
-
-
-        SDL_Rect goiyRect = {979,285,80,80};
-        goiy = new Goiy(goiytexture, goiyRect);
+    void initButton(SDL_Renderer* renderer, std::vector<Button*> &button){
         //nut
         SDL_Rect baseRect1 = {59,175,162,80};
         SDL_Texture* texture1 = IMG_LoadTexture(renderer, "assets/image/button/New.png");
@@ -38,6 +30,11 @@ struct Graphics{
         SDL_Texture* texture2 = IMG_LoadTexture(renderer, "assets/image/button/exit.png");
         Button* Exit = new Button(texture2, baseRect2, "Exit");
         button.push_back(Exit);
+
+        SDL_Rect baseRect3 = {979,285,80,80};
+        SDL_Texture* texture3 = IMG_LoadTexture(renderer, "assets/image/button/goiy.png");
+        Button* Goiy = new Button(texture3, baseRect3, "Goiy");
+        button.push_back(Goiy);
 
         SDL_Rect baseRect4 = {979,545,80,80};
         SDL_Texture* texture4 = IMG_LoadTexture(renderer, "assets/image/button/pause.png");
@@ -63,13 +60,7 @@ struct Graphics{
         SDL_Texture* texture9 = IMG_LoadTexture(renderer, "assets/image/button/volume2.png");
         Button* Volume2 = new Button(texture9, baseRect9, "Volume2");
         button.push_back(Volume2);
-
-        /*SDL_Rect baseRect8 = {1000,320,150,150};
-        SDL_Texture* texture8 = IMG_LoadTexture(renderer, "assets/clock.jpg");
-        Button* Clock = new Button(texture8, baseRect8, "Clock");
-        button.push_back(Clock);*/
     }
-
 
 
     void loadAllTextures()
@@ -296,7 +287,7 @@ struct Graphics{
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
 
-    void quit(std::vector<Button*>& buttons, Goiy* &goiy, TTF_Font* &font)
+    void quit(std::vector<Button*>& buttons, TTF_Font* &font)
     {
         if (font) {
             TTF_CloseFont(font);
@@ -315,8 +306,6 @@ struct Graphics{
 
         for (auto btn : buttons) delete btn;
         buttons.clear();
-        delete goiy;
-        //goiy.clear();
         audio.quit();
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);

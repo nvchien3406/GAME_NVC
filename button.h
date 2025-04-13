@@ -34,23 +34,9 @@ struct Button
     void render(SDL_Renderer* renderer) {
         SDL_RenderCopy(renderer, texture, nullptr, &currentRect);
     }
-
-};
-
-struct Goiy : public Button {
-    int click = 6;
-    //SDL_Texture* textures[6]; // goiy1 → goiy6
-
-    Goiy(SDL_Texture* texture, SDL_Rect baseRect)
-        : Button(texture, baseRect, "Goiy"){}  // bắt đầu với ảnh goiy6
-
-
-
-
-    // Hàm kiểm tra có nên vẽ nút không
     bool shouldRender() const {
         return texture != nullptr;
     }
-};
 
+};
 #endif // BUTTON_H_INCLUDED
