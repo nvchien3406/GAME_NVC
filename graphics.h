@@ -19,57 +19,55 @@ struct Graphics{
 
     SDL_Texture *background = nullptr;
 
-    void initButton(SDL_Renderer* renderer, std::vector<Button*> &button, std::vector<Goiy*> &goiy){
+    void initButton(SDL_Renderer* renderer, std::vector<Button*> &button, Goiy* &goiy){
         //goi y
-        SDL_Texture* goiyTextures[6];
-        for (int i = 0; i < 6; ++i) {
-            std::string path = "assets/goiy" + std::to_string(i + 1) + ".jpg";
-            goiyTextures[i] = IMG_LoadTexture(renderer, path.c_str());
-        }
+        SDL_Texture* goiytexture;
+        std::string path = "assets/image/button/goiy.png";
+        goiytexture = IMG_LoadTexture(renderer, path.c_str());
 
-        SDL_Rect goiyRect = {350, 40, 90, 50}; // vị trí bạn muốn
-        Goiy* goiyBtn = new Goiy(goiyTextures, goiyRect);
-        goiy.push_back(goiyBtn);
+
+        SDL_Rect goiyRect = {979,285,80,80};
+        goiy = new Goiy(goiytexture, goiyRect);
         //nut
-        SDL_Rect baseRect1 = {40,40,150,100};
-        SDL_Texture* texture1 = IMG_LoadTexture(renderer, "assets/New.png");
+        SDL_Rect baseRect1 = {59,175,162,80};
+        SDL_Texture* texture1 = IMG_LoadTexture(renderer, "assets/image/button/New.png");
         Button* New = new Button(texture1, baseRect1, "New");
         button.push_back(New);
 
-        SDL_Rect baseRect2 = {40,660,150,100};
-        SDL_Texture* texture2 = IMG_LoadTexture(renderer, "assets/exit.jpg");
+        SDL_Rect baseRect2 = {59,545,162,80};
+        SDL_Texture* texture2 = IMG_LoadTexture(renderer, "assets/image/button/exit.png");
         Button* Exit = new Button(texture2, baseRect2, "Exit");
         button.push_back(Exit);
 
-        SDL_Rect baseRect4 = {670,40,90,50};
-        SDL_Texture* texture4 = IMG_LoadTexture(renderer, "assets/pause.jpg");
+        SDL_Rect baseRect4 = {979,545,80,80};
+        SDL_Texture* texture4 = IMG_LoadTexture(renderer, "assets/image/button/pause.png");
         Button* Pause = new Button(texture4, baseRect4, "Pause");
         button.push_back(Pause);
 
-        SDL_Rect baseRect7 = {670,40,90,50};
-        SDL_Texture* texture7 = IMG_LoadTexture(renderer, "assets/play.jpg");
+        SDL_Rect baseRect7 = {979,545,80,80};
+        SDL_Texture* texture7 = IMG_LoadTexture(renderer, "assets/image/button/play.png");
         Button* Play = new Button(texture7, baseRect7, "Play");
         button.push_back(Play);
 
-        SDL_Rect baseRect5 = {670,700,90,50};
-        SDL_Texture* texture5 = IMG_LoadTexture(renderer, "assets/luyen.jpg");
+        SDL_Rect baseRect5 = {59,360,162,80};
+        SDL_Texture* texture5 = IMG_LoadTexture(renderer, "assets/image/button/luyen.png");
         Button* Luyen = new Button(texture5, baseRect5, "Luyen");
         button.push_back(Luyen);
 
-        SDL_Rect baseRect6 = {350,700,90,50};
-        SDL_Texture* texture6 = IMG_LoadTexture(renderer, "assets/volume1.jpg");
+        SDL_Rect baseRect6 = {979,415,80,80};
+        SDL_Texture* texture6 = IMG_LoadTexture(renderer, "assets/image/button/volume1.png");
         Button* Volume1 = new Button(texture6, baseRect6, "Volume1");
         button.push_back(Volume1);
 
-        SDL_Rect baseRect9 = {350,700,90,50};
-        SDL_Texture* texture9 = IMG_LoadTexture(renderer, "assets/volume2.jpg");
+        SDL_Rect baseRect9 = {979,415,80,80};
+        SDL_Texture* texture9 = IMG_LoadTexture(renderer, "assets/image/button/volume2.png");
         Button* Volume2 = new Button(texture9, baseRect9, "Volume2");
         button.push_back(Volume2);
 
-        SDL_Rect baseRect8 = {1000,320,150,150};
+        /*SDL_Rect baseRect8 = {1000,320,150,150};
         SDL_Texture* texture8 = IMG_LoadTexture(renderer, "assets/clock.jpg");
         Button* Clock = new Button(texture8, baseRect8, "Clock");
-        button.push_back(Clock);
+        button.push_back(Clock);*/
     }
 
 
@@ -78,7 +76,7 @@ struct Graphics{
     {
         for (int i = 0; i < 36; i++)
         {
-            std::string filename = "image/" + std::to_string(i) + ".png";
+            std::string filename = "assets/image/pokemon/" + std::to_string(i) + ".png";
             textures[i] = loadTexture(filename.c_str());
 
             if (textures[i] == nullptr)
@@ -86,7 +84,7 @@ struct Graphics{
                 SDL_Log("Failed to load %s", filename.c_str());
             }
         }
-        background = IMG_LoadTexture(renderer, "image/background.png");
+        background = IMG_LoadTexture(renderer, "assets/image/pokemon/background.png");
         if (!background) {
             std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
         }
@@ -99,7 +97,7 @@ struct Graphics{
         int tileSize2 = 50;
 
         //Chuyển tọa độ thành ô
-        int i = (y - 200) / tileSize2;
+        int i = (y - 175) / tileSize2;
         int j = (x - 280) / tileSize1;
 
 
@@ -124,9 +122,9 @@ struct Graphics{
                             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                             for (size_t i = 0; i < path.size() - 1; i++) {
                                 int x1 = 280 + path[i].second * tileSize1 + tileSize1 / 2;
-                                int y1 = 200 + path[i].first * tileSize2 + tileSize2 / 2;
+                                int y1 = 175 + path[i].first * tileSize2 + tileSize2 / 2;
                                 int x2 = 280 + path[i + 1].second * tileSize1 + tileSize1 / 2;
-                                int y2 = 200 + path[i + 1].first * tileSize2 + tileSize2 / 2;
+                                int y2 = 175 + path[i + 1].first * tileSize2 + tileSize2 / 2;
                                 SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
                                 SDL_RenderDrawLine(renderer, x1+1, y1+1, x2+1, y2+1);
                                 SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
@@ -161,9 +159,9 @@ struct Graphics{
         SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
         for(size_t i = 0; i < pikachu.hintPath.size() - 1; i++){
             int x1 = 280 + pikachu.hintPath[i].second * tileSize1 + tileSize1 / 2;
-            int y1 = 200 + pikachu.hintPath[i].first * tileSize2 + tileSize2 / 2;
+            int y1 = 175 + pikachu.hintPath[i].first * tileSize2 + tileSize2 / 2;
             int x2 = 280 + pikachu.hintPath[i + 1].second * tileSize1 + tileSize1 / 2;
-            int y2 = 200 + pikachu.hintPath[i + 1].first * tileSize2 + tileSize2 / 2;
+            int y2 = 175 + pikachu.hintPath[i + 1].first * tileSize2 + tileSize2 / 2;
             SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
             SDL_RenderDrawLine(renderer, x1+1, y1+1, x2+1, y2+1);
             SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
@@ -191,7 +189,7 @@ struct Graphics{
                 if (type > 0 && type < 37)
                 {
                     int x = 280 + j * tileSize1;
-                    int y = 200 + i * tileSize2;
+                    int y = 175 + i * tileSize2;
                     renderTexture(textures[type - 1], x, y);
 
                     if (i == pikachu.selectedX && j == pikachu.selectedY) {
@@ -298,10 +296,12 @@ struct Graphics{
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
 
-    void quit()
+    void quit(std::vector<Button*>& buttons, Goiy* &goiy, TTF_Font* &font)
     {
-        TTF_Quit();
-        IMG_Quit();
+        if (font) {
+            TTF_CloseFont(font);
+            font = nullptr;
+        }
         for (int i = 0; i < 36; ++i) {
             if (textures[i]) {
                 SDL_DestroyTexture(textures[i]);
@@ -312,8 +312,16 @@ struct Graphics{
             SDL_DestroyTexture(background);
             background = nullptr;
         }
+
+        for (auto btn : buttons) delete btn;
+        buttons.clear();
+        delete goiy;
+        //goiy.clear();
+        audio.quit();
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
+        TTF_Quit();
+        IMG_Quit();
         SDL_Quit();
     }
     //ttf
@@ -397,19 +405,19 @@ struct Graphics{
             SDL_DestroyTexture(timeTexture);
         }
     }
-    void drawScore1(SDL_Renderer* renderer, TTF_Font* font) {
-        std::string scoreText = "SCORE";
+    void drawScore(SDL_Renderer* renderer, TTF_Font* font, int x) {
+        std::string scoreText = "SCORE:" + std::to_string(x);
         SDL_Color color = {255, 255, 255}; // Màu trắng
         SDL_Texture* scoreTexture = renderText(scoreText.c_str(), font, color);
         if (scoreTexture) {
             int tw, th;
             SDL_QueryTexture(scoreTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {950, 65, tw, th}; // Vị trí dưới nút Score
+            SDL_Rect dst = {935, 75, tw, th}; // Vị trí dưới nút Score
             SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
             SDL_DestroyTexture(scoreTexture);
         }
     }
-    void drawScore(SDL_Renderer* renderer, TTF_Font* font, int score) {
+    /*void drawScore(SDL_Renderer* renderer, TTF_Font* font, int score) {
         std::string scoreText = std::to_string(score);
         SDL_Color color = {255, 255, 255}; // Màu trắng
         SDL_Texture* scoreTexture = renderText(scoreText.c_str(), font, color);
@@ -420,27 +428,27 @@ struct Graphics{
             SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
             SDL_DestroyTexture(scoreTexture);
         }
-    }
-    void drawLevel(SDL_Renderer* renderer, TTF_Font* font) {
-        std::string levelText = "LEVEL";
+    }*/
+    void drawLevel(SDL_Renderer* renderer, TTF_Font* font, int x) {
+        std::string levelText = "LEVEL:" + std::to_string(x);
         SDL_Color color = {255, 255, 255}; // Màu trắng
         SDL_Texture* levelTexture = renderText(levelText.c_str(), font, color);
         if (levelTexture) {
             int tw, th;
             SDL_QueryTexture(levelTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {40, 250, tw, th}; // Vị trí dưới nút Score
+            SDL_Rect dst = {52, 75, tw, th}; // Vị trí dưới nút Score
             SDL_RenderCopy(renderer, levelTexture, NULL, &dst);
             SDL_DestroyTexture(levelTexture);
         }
     }
-    void drawLevel1(SDL_Renderer* renderer, TTF_Font* font, int x) {
+    void drawLevel1(SDL_Renderer* renderer, TTF_Font* font,int x) {
         std::string levelText = std::to_string(x);
         SDL_Color color = {255, 255, 255}; // Màu trắng
         SDL_Texture* levelTexture = renderText(levelText.c_str(), font, color);
         if (levelTexture) {
             int tw, th;
             SDL_QueryTexture(levelTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {100, 350, tw, th}; // Vị trí dưới nút Score
+            SDL_Rect dst = {1040, 285, tw, th}; // Vị trí dưới nút Score
             SDL_RenderCopy(renderer, levelTexture, NULL, &dst);
             SDL_DestroyTexture(levelTexture);
         }

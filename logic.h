@@ -308,20 +308,6 @@ struct Pikachu{
             }
         }
     }
-    void handleWin(int& currentLevel, int& remainingTime, const std::vector<Level>& gameLevels,const std::vector<Goiy*>& goiy) {
-        currentLevel++;
-        if (currentLevel >= gameLevels.size()) {
-            currentLevel = 0; // Quay lại level 1
-        }
-
-        init(gameLevels[currentLevel].imgcount); // Khởi tạo lại map
-        remainingTime = gameLevels[currentLevel].timelimit;
-        for(auto&g : goiy){
-            g->click = 6;
-            g->texture = g->textures[5];
-            g->currentRect = g->baseRect;
-        }
-    }
     void addLine(std::vector<std::pair<int, int>> &v, int xStart, int yStart, int xEnd, int yEnd){
         if(xStart == xEnd){
             int step = yStart < yEnd ? 1 : -1;

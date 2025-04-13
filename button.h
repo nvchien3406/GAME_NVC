@@ -39,16 +39,11 @@ struct Button
 
 struct Goiy : public Button {
     int click = 6;
-    SDL_Texture* textures[6]; // goiy1 → goiy6
+    //SDL_Texture* textures[6]; // goiy1 → goiy6
 
-    Goiy(SDL_Texture* texArray[6], SDL_Rect baseRect)
-        : Button(texArray[5], baseRect, "Goiy")  // bắt đầu với ảnh goiy6
-    {
-        for (int i = 0; i < 6; ++i) {
-            textures[i] = texArray[i];
-        }
-        currentRect = baseRect;
-    }
+    Goiy(SDL_Texture* texture, SDL_Rect baseRect)
+        : Button(texture, baseRect, "Goiy"){}  // bắt đầu với ảnh goiy6
+
 
 
 
