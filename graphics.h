@@ -8,19 +8,18 @@
 #include "logic.h"
 #include "button.h"
 #include "audio.h"
-
-Uint32 lastActionTime = 0;
-bool isActionInProgress = false;
 struct Graphics{
 
 
-    Audio audio;
+
     SDL_Renderer *renderer;
     SDL_Window *window;
 
     SDL_Texture *textures[36];
 
-    SDL_Texture *background = nullptr;
+    SDL_Texture *background_game = nullptr;
+    SDL_Texture *background_menu = nullptr;
+    SDL_Texture *background_lose = nullptr;
 
     void initButton(SDL_Renderer* renderer, std::vector<Button*> &button){
         //nut
@@ -54,6 +53,11 @@ struct Graphics{
         Button* Luyen = new Button(texture5, baseRect5, "Luyen");
         button.push_back(Luyen);
 
+        SDL_Rect baseRect8 = {59,360,162,80};
+        SDL_Texture* texture8 = IMG_LoadTexture(renderer, "assets/image/button/endluyen.png");
+        Button* ELuyen = new Button(texture8, baseRect8, "ELuyen");
+        button.push_back(ELuyen);
+
         SDL_Rect baseRect6 = {979,415,80,80};
         SDL_Texture* texture6 = IMG_LoadTexture(renderer, "assets/image/button/volume1.png");
         Button* Volume1 = new Button(texture6, baseRect6, "Volume1");
@@ -78,14 +82,23 @@ struct Graphics{
                 SDL_Log("Failed to load %s", filename.c_str());
             }
         }
-        background = IMG_LoadTexture(renderer, "assets/image/pokemon/background.png");
-        if (!background) {
+        background_game = IMG_LoadTexture(renderer, "assets/image/pokemon/background.png");
+        if (!background_game) {
+            std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
+        }
+
+        background_menu = IMG_LoadTexture(renderer, "assets/image/pokemon/menu.jpg");
+        if (!background_menu) {
+            std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
+        }
+        background_lose = IMG_LoadTexture(renderer, "assets/image/pokemon/lose.jpg");
+        if (!background_lose) {
             std::cerr << "Failed to load background: " << SDL_GetError() << std::endl;
         }
     }
 
 
-    void handleMouseClick(int x, int y, Pikachu& pikachu, int &score, bool isMuted) {
+    void handleMouseClick(int x, int y, Pikachu& pikachu, int &score, bool isMuted, Audio audio) {
         int gridSize = pikachu.rows;
         int tileSize1 = 40;
         int tileSize2 = 50;
@@ -112,9 +125,8 @@ struct Graphics{
                         if(!isMuted)
                             audio.play(audio.linked);
                         std::vector<std::pair<int, int>> path = pikachu.duongdi(pikachu.selectedX, pikachu.selectedY, i, j);
+
                         if(!path.empty()){
-                            lastActionTime = SDL_GetTicks();
-                            isActionInProgress = true;
                             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                             for (size_t i = 0; i < path.size() - 1; i++) {
                                 int x1 = 280 + path[i].second * tileSize1 + tileSize1 / 2;
@@ -131,6 +143,7 @@ struct Graphics{
                             SDL_RenderPresent(renderer);
                             SDL_Delay(300);
                         }
+
                         pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
 
                         score += 5;
@@ -167,11 +180,11 @@ struct Graphics{
             SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
         }
         SDL_RenderPresent(renderer);
-        SDL_Delay(700);
+        SDL_Delay(500);
 
     }
 
-    void drawMap(int mp[9][16]/*, int gridSize*/, Pikachu &pikachu, bool isPause)
+    void drawMap(int mp[9][16], Pikachu &pikachu, bool isPause)
     {
         if(isPause) return;
         int tileSize1 = 40;
@@ -237,7 +250,7 @@ struct Graphics{
         {
             logErrorAndExit( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
         }
-        audio.init();
+        //audio.init();
     }
 
     void prepareScene()
@@ -293,7 +306,7 @@ struct Graphics{
         SDL_RenderCopy(renderer, texture, src, &dest);
     }
 
-    void quit(std::vector<Button*>& buttons, TTF_Font* &font)
+    void quit(std::vector<Button*>& buttons, TTF_Font* &font, Audio &audio)
     {
         if (font) {
             TTF_CloseFont(font);
@@ -305,11 +318,18 @@ struct Graphics{
                 textures[i] = nullptr;
             }
         }
-        if (background) {
-            SDL_DestroyTexture(background);
-            background = nullptr;
+        if (background_game) {
+            SDL_DestroyTexture(background_game);
+            background_game = nullptr;
         }
-
+        if (background_menu) {
+            SDL_DestroyTexture(background_menu);
+            background_menu = nullptr;
+        }
+        if (background_lose) {
+            SDL_DestroyTexture(background_lose);
+            background_lose = nullptr;
+        }
         for (auto btn : buttons) delete btn;
         buttons.clear();
         audio.quit();
@@ -424,7 +444,7 @@ struct Graphics{
             SDL_DestroyTexture(levelTexture);
         }
     }
-    void drawLevel1(SDL_Renderer* renderer, TTF_Font* font,int x) {
+    void Goiy(SDL_Renderer* renderer, TTF_Font* font,int x) {
         std::string levelText = std::to_string(x);
         SDL_Color color = {255, 255, 255}; // Màu trắng
         SDL_Texture* levelTexture = renderText(levelText.c_str(), font, color);
@@ -443,12 +463,11 @@ struct Graphics{
         int fullWidth = 600;
         int height = 25;
 
-        // Thanh nền màu (ví dụ: xanh lá)
+        // thanh nền xanh
         SDL_Rect baseBar = { x, y, fullWidth, height };
-        SDL_SetRenderDrawColor(renderer, 50, 205, 50, 255); // Lime green
+        SDL_SetRenderDrawColor(renderer, 50, 205, 50, 255); // xanh lá
         SDL_RenderFillRect(renderer, &baseBar);
 
-        // Phần ảnh đen kéo từ phải sang trái
         float timePercent = (float)remainingTime / (float)totalTime;
         int blackWidth = fullWidth * (1 - timePercent);
 

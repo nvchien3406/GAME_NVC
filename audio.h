@@ -9,6 +9,9 @@ public:
     Mix_Chunk* linked = nullptr;
     Mix_Chunk* win = nullptr;
     Mix_Chunk* oho = nullptr;
+    Mix_Chunk* mouse = nullptr;
+    Mix_Music* music = nullptr;
+
 
     Mix_Music *loadMusic(const char* path)
     {
@@ -53,6 +56,8 @@ public:
         linked = loadSound("Sound/linked.mp3");
         win = loadSound("Sound/win.mp3");
         oho = loadSound("Sound/oho.mp3");
+        mouse = loadSound("Sound/mouse-click.mp3");
+        music = loadMusic("Sound/music.mp3");
     }
 
     void quit(){
@@ -79,6 +84,14 @@ public:
         if (oho != nullptr) {
             Mix_FreeChunk(oho);
             oho = nullptr;
+        }
+        if (mouse != nullptr) {
+            Mix_FreeChunk(mouse);
+            mouse = nullptr;
+        }
+        if(music != nullptr){
+            Mix_FreeMusic(music);
+            music = nullptr;
         }
 
         Mix_Quit();

@@ -30,7 +30,6 @@ struct Pikachu{
     void taoMap(int numValues){
         srand(time(0));
         int totalTiles = rows * cols;
-        //int numValues = 36; //so con vat tu 1 -> 36
 
         std::vector<int> tileVal;
         std::vector<int> count(numValues + 1, 0);
@@ -42,7 +41,6 @@ struct Pikachu{
 
             if (sum + add > totalTiles) {
                 add = totalTiles - sum; // Nếu vượt quá tổng ô, chỉ thêm phần còn thiếu
-                if (add % 2 == 1) add--; // Đảm bảo chẵn
             }
 
             if (add > 0) {
@@ -186,7 +184,7 @@ struct Pikachu{
 
 
     //Neu khong con duong di thi xao tron
-    void xaotron(){
+    void shuffle(){
         std::vector<std::pair<int, int>> pos; // Lưu vị trí các ô có hình
         std::vector<int> values; // Lưu giá trị của các ô có hình
 
