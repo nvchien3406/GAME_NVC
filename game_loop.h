@@ -9,12 +9,17 @@
 #include "audio.h"
 #include "level.h"
 
-void Timeupdate(Uint32 &lastTick, int &remainingTime, bool &isPause, int &currentLevel, Pikachu &pikachu, bool isPracticeMode){
+void Timeupdate(Uint32 &lastTick, int &remainingTime, bool &isPause, int &currentLevel, Pikachu &pikachu, bool isPracticeMode, bool &isFlashing){
     if (isPracticeMode) return;
     Uint32 currentTick = SDL_GetTicks();
     if (!isPause && currentTick - lastTick >= 1000) {
         remainingTime--;
         lastTick = currentTick;
+    }
+    if (remainingTime <= 30) {
+        isFlashing = !isFlashing;
+    } else {
+        isFlashing = false;
     }
     if (remainingTime <= 0) {
         // Reset về level 1 khi hết thời gian
@@ -80,8 +85,13 @@ void handleEvents(SDL_Event &e, std::vector<Button*> &buttons, Graphics &graphic
             }
         }
         // Nếu không pause, xử lý click trên game
-        if (!isPause)
+        if (!isPause && x > 280 && y > 175)
             graphics.handleMouseClick(x, y, pikachu, score, isMuted);
+    }
+    if(clickGoiy > 0){
+        for(auto& btn : buttons){
+            if(btn->id == "Goiy") btn->texture = IMG_LoadTexture(graphics.renderer, "assets/image/button/goiy1.png");
+        }
     }
 
 }
@@ -97,9 +107,12 @@ void handleWin(Graphics &graphics, Pikachu & pikachu, int &currentLevel, int &re
     // Đặt lại trạng thái gợi ý
 
     clickGoiy = 6;
+    /*for(auto& btn : buttons){
+        if(btn->id == "Goiy") btn->texture = IMG_LoadTexture(graphics.renderer, "assets/image/button/goiy1.png");
+    }*/
 
 }
-void renderScene(Graphics &graphics, Pikachu &pikachu, int &score, int &remainingTime, TTF_Font* font, bool isPause, bool isMuted, bool isPracticeMode, std::vector<Button*> &buttons, int &clickGoiy, int currentLevel) {
+void renderScene(Graphics &graphics, Pikachu &pikachu, int &score, int &remainingTime, TTF_Font* font, bool isPause, bool isMuted, bool isPracticeMode, std::vector<Button*> &buttons, int &clickGoiy, int currentLevel, bool isFlashing) {
     SDL_RenderClear(graphics.renderer);
     graphics.prepareScene(graphics.background);
 
@@ -130,7 +143,10 @@ void renderScene(Graphics &graphics, Pikachu &pikachu, int &score, int &remainin
 
     // Vẽ bản đồ game
     graphics.drawMap(pikachu.mp, pikachu, isPause);
-    if(!isPracticeMode) graphics.drawTime(graphics.renderer, font, remainingTime);
+    if(!isPracticeMode){
+        graphics.drawTime(graphics.renderer, font, remainingTime);
+        graphics.drawTimeBar(graphics.renderer, remainingTime, gameLevels[currentLevel].timelimit, isFlashing );
+    }
     graphics.drawScore(graphics.renderer, font, score);
     //graphics.drawScore1(graphics.renderer, font1);
     graphics.drawLevel(graphics.renderer, font, currentLevel + 1);

@@ -29,11 +29,11 @@ int main(int argc, char* argv[])
     graphics.initButton(graphics.renderer, buttons);
 
     bool isPause = false, isMuted = false;
-    bool running = true, isPracticeMode = false;
+    bool running = true, isPracticeMode = false, isFlashing = false;
     SDL_Event e;
 
     while (running) {
-        Timeupdate(lastTick, remainingTime, isPause, currentLevel, pikachu, isPracticeMode);
+        Timeupdate(lastTick, remainingTime, isPause, currentLevel, pikachu, isPracticeMode, isFlashing);
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) running = false;
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
         if (!pikachu.isclear() && !pikachu.hasmove()) pikachu.xaotron();
         else if (pikachu.isclear()) handleWin(graphics, pikachu, currentLevel, remainingTime, clickGoiy);
 
-        renderScene(graphics, pikachu, score, remainingTime, font, isPause, isMuted, isPracticeMode, buttons, clickGoiy, currentLevel);
+        renderScene(graphics, pikachu, score, remainingTime, font, isPause, isMuted, isPracticeMode, buttons, clickGoiy, currentLevel, isFlashing);
         SDL_Delay(100);
     }
 

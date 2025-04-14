@@ -9,8 +9,11 @@
 #include "button.h"
 #include "audio.h"
 
-
+Uint32 lastActionTime = 0;
+bool isActionInProgress = false;
 struct Graphics{
+
+
     Audio audio;
     SDL_Renderer *renderer;
     SDL_Window *window;
@@ -32,7 +35,7 @@ struct Graphics{
         button.push_back(Exit);
 
         SDL_Rect baseRect3 = {979,285,80,80};
-        SDL_Texture* texture3 = IMG_LoadTexture(renderer, "assets/image/button/goiy.png");
+        SDL_Texture* texture3 = IMG_LoadTexture(renderer, "assets/image/button/goiy1.png");
         Button* Goiy = new Button(texture3, baseRect3, "Goiy");
         button.push_back(Goiy);
 
@@ -110,6 +113,8 @@ struct Graphics{
                             audio.play(audio.linked);
                         std::vector<std::pair<int, int>> path = pikachu.duongdi(pikachu.selectedX, pikachu.selectedY, i, j);
                         if(!path.empty()){
+                            lastActionTime = SDL_GetTicks();
+                            isActionInProgress = true;
                             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                             for (size_t i = 0; i < path.size() - 1; i++) {
                                 int x1 = 280 + path[i].second * tileSize1 + tileSize1 / 2;
@@ -123,17 +128,18 @@ struct Graphics{
                                 SDL_RenderDrawLine(renderer, x1-1, y1+1, x2-1, y2+1);
                                 SDL_RenderDrawLine(renderer, x1-1, y1-1, x2-1, y2-1);
                             }
-
                             SDL_RenderPresent(renderer);
                             SDL_Delay(300);
                         }
                         pikachu.removepair(pikachu.selectedX, pikachu.selectedY, i, j);
 
-                        score += 10;
+                        score += 5;
 
                         pikachu.selectedX = -1;
                         pikachu.selectedY = -1;
-                    } else {
+                    }
+
+                    else {
                         if(!isMuted)
                             audio.play(audio.oho);
                         pikachu.selectedX = -1;
@@ -389,7 +395,7 @@ struct Graphics{
         if (timeTexture) {
             int tw, th;
             SDL_QueryTexture(timeTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {1000, 510, tw, th}; // Vị trí dưới hình đồng hồ
+            SDL_Rect dst = {525, 45, tw, th}; // Vị trí dưới hình đồng hồ
             SDL_RenderCopy(renderer, timeTexture, NULL, &dst);
             SDL_DestroyTexture(timeTexture);
         }
@@ -401,23 +407,11 @@ struct Graphics{
         if (scoreTexture) {
             int tw, th;
             SDL_QueryTexture(scoreTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {935, 75, tw, th}; // Vị trí dưới nút Score
+            SDL_Rect dst = {935, 75, tw, th};
             SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
             SDL_DestroyTexture(scoreTexture);
         }
     }
-    /*void drawScore(SDL_Renderer* renderer, TTF_Font* font, int score) {
-        std::string scoreText = std::to_string(score);
-        SDL_Color color = {255, 255, 255}; // Màu trắng
-        SDL_Texture* scoreTexture = renderText(scoreText.c_str(), font, color);
-        if (scoreTexture) {
-            int tw, th;
-            SDL_QueryTexture(scoreTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {1000, 160, tw, th}; // Vị trí dưới nút Score
-            SDL_RenderCopy(renderer, scoreTexture, NULL, &dst);
-            SDL_DestroyTexture(scoreTexture);
-        }
-    }*/
     void drawLevel(SDL_Renderer* renderer, TTF_Font* font, int x) {
         std::string levelText = "LEVEL:" + std::to_string(x);
         SDL_Color color = {255, 255, 255}; // Màu trắng
@@ -437,9 +431,36 @@ struct Graphics{
         if (levelTexture) {
             int tw, th;
             SDL_QueryTexture(levelTexture, NULL, NULL, &tw, &th);
-            SDL_Rect dst = {1040, 285, tw, th}; // Vị trí dưới nút Score
+            SDL_Rect dst = {1040, 340, tw, th};
             SDL_RenderCopy(renderer, levelTexture, NULL, &dst);
             SDL_DestroyTexture(levelTexture);
+        }
+    }
+    void drawTimeBar(SDL_Renderer* renderer, int remainingTime, int totalTime, bool isFlashing) {
+        // Vị trí và kích thước thanh thời gian
+        int x = 280;
+        int y = 75;
+        int fullWidth = 600;
+        int height = 25;
+
+        // Thanh nền màu (ví dụ: xanh lá)
+        SDL_Rect baseBar = { x, y, fullWidth, height };
+        SDL_SetRenderDrawColor(renderer, 50, 205, 50, 255); // Lime green
+        SDL_RenderFillRect(renderer, &baseBar);
+
+        // Phần ảnh đen kéo từ phải sang trái
+        float timePercent = (float)remainingTime / (float)totalTime;
+        int blackWidth = fullWidth * (1 - timePercent);
+
+        SDL_Rect blackCover = { x + (fullWidth - blackWidth), y, blackWidth, height };
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Màu đen
+        SDL_RenderFillRect(renderer, &blackCover);
+        if(remainingTime <= 30){
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            if(isFlashing){
+                SDL_Rect borderRect = { x - 2, y - 2, fullWidth + 4, height + 4 };
+                SDL_RenderDrawRect(renderer, &borderRect);
+            }
         }
     }
 };

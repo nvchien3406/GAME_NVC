@@ -7,7 +7,7 @@ struct Level{
 };
 
 const std::vector<Level> gameLevels = {
-    {18, 10 * 60},  // Level 1
+    {18, 10 *60},  // Level 1
     {18,  8 * 60},  // Level 2
     {24, 10 * 60},  // Level 3
     {24,  8 * 60},  // Level 4
