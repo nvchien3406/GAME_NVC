@@ -1,6 +1,6 @@
 1. Thông tin sinh viên: Họ và tên: Nguyễn Văn Chiến Mã sinh viên: 24021394
 2. Chủ đề game: Game Pikachu, nối thú cổ điển. Người chơi chọn cặp thú cùng loại với điều kiện cặp thú đó có thể nối được cho đến khi hết tất cả các cặp thú trong một thời gian nhất định.
-3. Ngưỡng điểm mong muốn:
+3. Ngưỡng điểm mong muốn: 8.5
 4. Tính năng trong game:
    1. Tự làm tất cả các phần trừ phần vẽ thanh thời gian 
    2. Các nguồn tham khảo:
